@@ -1,11 +1,7 @@
 import { Document, model, Schema } from 'mongoose';
+import { IAuthor } from 'src/domain/interfaces/IAuthor';
 
-export interface AuthorModel {
-  name: string;
-  description: string;
-}
-
-interface AuthorSchema extends Document, AuthorModel {}
+interface AuthorSchema extends Document, IAuthor {}
 
 const authorModel = new Schema<AuthorSchema>({
   name: {
@@ -13,10 +9,6 @@ const authorModel = new Schema<AuthorSchema>({
     required: true,
     lowercase: true,
     unique: true,
-  },
-  description: {
-    type: String,
-    required: true,
   },
 });
 

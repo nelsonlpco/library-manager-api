@@ -1,39 +1,53 @@
 import mongoose from 'mongoose';
+import Configuration from 'src/configs/Configuration';
+import IContext from 'src/infra/interfaces/IContext';
 
-export default class MongodbContext {
-  config: any;
-  logger: any;
+export default class MongodbContext implements IContext {
+  config: Configuration;
 
-  constructor(config, logger) {
+  constructor(config: Configuration) {
     this.config = config;
-    this.logger = logger;
   }
 
-  async connect() {
-    let credentials = '';
-
-    if (this.config.auth) {
-      credentials = `${this.config.user}:${this.config.password}@`;
-    }
-
-    const connection = `mongodb://${credentials}${this.config.host}:${this.config.port}/${this.config.database}`;
-    const options = this.config.ENV === 'prod' ? { autoIndex: false} : {};
+  async connect(): Promise<boolean> {
     try {
+      await mongoose.connect(this.config.mongodbUri, {
+        dbName: this.config.mongodbDatabaseName,
+        user: this.config.mongodbAdminUser,
+        pass: this.config.mongodbAdminPassword,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      });
 
-    }catch( error ) {
-      //TODO: add logger error
-      process.exit(1);
+      mongoose.connection.on('connected', () => {
+        console.log('Mongoose connected to db');
+      });
+
+      mongoose.connection.on('error', (error) => {
+        console.log('Error on mongoose connection: ', error.message);
+      });
+
+      mongoose.connection.on('disconnected', () => {
+        console.log('Mongoose disconnected.');
+      });
+
+      return true;
+    } catch (error) {
+      console.log(`Error on connect to mongodb: ${error.message}`);
+      return false;
     }
-
   }
 
-  async close() {
+  async close(): Promise<boolean> {
     //TODO: ADD LOGGER
-
-    await mongoose.connection.close().catch(erro => {
+    try {
+      await mongoose.connection.close();
+      return true;
+    } catch {
       //TODO: add logger
-      process.exit(1);
-    });
+      return false;
+    }
   }
-
 }
