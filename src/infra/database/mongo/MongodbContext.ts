@@ -1,16 +1,18 @@
 import mongoose from 'mongoose';
-import Configuration from 'src/configs/Configuration';
+import ConfigurationManager from 'src/infra/configurations/ConfigurationManager';
 import IContext from 'src/infra/interfaces/IContext';
 
 export default class MongodbContext implements IContext {
-  config: Configuration;
+  config: ConfigurationManager;
 
-  constructor(config: Configuration) {
+  constructor(config: ConfigurationManager) {
     this.config = config;
   }
 
   async connect(): Promise<boolean> {
     try {
+      console.log('aqui >>', this.config.mongodbUri);
+
       await mongoose.connect(this.config.mongodbUri, {
         dbName: this.config.mongodbDatabaseName,
         user: this.config.mongodbAdminUser,
@@ -41,12 +43,10 @@ export default class MongodbContext implements IContext {
   }
 
   async close(): Promise<boolean> {
-    //TODO: ADD LOGGER
     try {
       await mongoose.connection.close();
       return true;
     } catch {
-      //TODO: add logger
       return false;
     }
   }

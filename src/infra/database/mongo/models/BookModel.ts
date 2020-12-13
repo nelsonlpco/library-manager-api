@@ -1,18 +1,31 @@
-import { Document, model, Schema } from 'mongoose';
-import IBook from 'src/domain/interfaces/IBook';
+import { model,  Schema } from 'mongoose';
 
-interface IBookSchema extends Document, IBook {}
+import IBookSchema from './interfaces/IBookSchema';
+import { authorSchema } from './AuthorModel';
 
-const bookModel = new Schema({
+export const bookSchema = new Schema({
   title: {
     type: String,
     required: true,
-    lowercase: true,
     unique: true,
   },
   description: {
     type: String,
   },
+  isbn: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  publisherDate: {
+    type: Date,
+    required: true,
+  },
+  author: {
+    type: authorSchema,
+    required: true,
+  },
+  publisher:
 });
 
-export default model<IBookSchema>('Book', bookModel);
+export default model<IBookSchema>('Book', bookSchema);

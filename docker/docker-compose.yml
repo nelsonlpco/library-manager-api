@@ -11,13 +11,15 @@ services:
     volumes:
       - ../:/app
     command: yarn start
+    depends_on:
+      - mongo
 
   mongo:
     image: mongo
     container_name: mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USENAME: root
+      MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: mongo123
     ports:
       - 27017:27017
@@ -30,4 +32,6 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: mongo123
+    depends_on:
+      - mongo
 

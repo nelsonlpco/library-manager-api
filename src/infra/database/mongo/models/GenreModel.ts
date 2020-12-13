@@ -1,7 +1,6 @@
-import { Document, model, Schema } from 'mongoose';
-import IGenre from 'src/domain/interfaces/IGenre';
+import { model, Schema } from 'mongoose';
 
-interface IGenereSchema extends Document, IGenre {}
+import IGenreSchema from './interfaces/IGenereSchema';
 
 const genreModel = new Schema({
   description: {
@@ -11,4 +10,4 @@ const genreModel = new Schema({
   },
 });
 
-export default model<IGenereSchema>('Genere', genreModel);
+export default model<IGenreSchema>('Genre', genreModel);

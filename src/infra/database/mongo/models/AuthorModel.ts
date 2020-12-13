@@ -1,15 +1,13 @@
-import { Document, model, Schema } from 'mongoose';
-import { IAuthor } from 'src/domain/interfaces/IAuthor';
+import { model, Schema } from 'mongoose';
 
-interface AuthorSchema extends Document, IAuthor {}
+import IAuthorSchema from './interfaces/IAuthorSchema';
 
-const authorModel = new Schema<AuthorSchema>({
+export const authorSchema = new Schema({
   name: {
     type: String,
     required: true,
-    lowercase: true,
     unique: true,
   },
 });
 
-export default model<AuthorSchema>('Author', authorModel);
+export default model<IAuthorSchema>('Author', authorSchema);
